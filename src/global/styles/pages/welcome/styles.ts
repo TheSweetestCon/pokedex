@@ -4,7 +4,7 @@ import { css } from 'styled-components/native';
 export const Container = styled.View`
     ${({theme}) => css`
         flex: 1;
-        background-color: ${theme.colors.backgroundFire};
+        background-color: ${theme.colors.background};
     `}
 `;
     
@@ -37,7 +37,7 @@ export const Footer = styled.View`
         border-top-right-radius: 20px;
         border-top-left-radius: 20px;
         height: 30%;
-        background-color: ${theme.colors.background};
+        background-color: ${theme.colors.backgroundFire};
         padding: 60px;
     `}
 `;
@@ -46,7 +46,7 @@ export const Title = styled.Text`
     ${({theme}) => css`
         font-size: 40px;
         font-weight: bold;
-        color: ${theme.colors.text_white};
+        color: ${theme.colors.backgroundFire};
         margin-top: 20px;
     `}
 `;
@@ -54,6 +54,6 @@ export const Subtitle = styled.Text`
     ${({theme}) => css`
         font-size: 14px;
         margin-top: 5px;
-        color: ${theme.colors.text_white};
+        color: ${theme.colors.backgroundFire};
     `}
 `;
