@@ -3,6 +3,8 @@ import {FlatList, Text} from 'react-native'
 import * as S from './styles'
 import api from '../../../../service/api';
 import { Card, Pokemon, PokemonType } from '../../../../components/card';
+import pokeballHeader from '../../../../assets/img/pokeball.png'
+import { useNavigation } from '@react-navigation/native';
 
 
 type Request = {
@@ -13,6 +15,13 @@ type Request = {
 export function Home(){
 
     const [pokemons, setPokemons] = useState<Pokemon[]>([])
+
+    const {navigate} = useNavigation()
+    function handleNavigation(pokemonID: number){
+        navigate('About', {
+            pokemonID,
+        })
+    }
 
     useEffect(() => {
         async function getAllPokemon() {
@@ -46,10 +55,25 @@ export function Home(){
 
     return <S.Container>
        <FlatList
+            ListHeaderComponent={
+                <>
+                    <S.Header source={pokeballHeader} />
+                    <S.Title>Pokédex</S.Title>
+                
+                </>
+
+            }
+            contentContainerStyle = {{
+                paddingHorizontal: 20
+            }}
             data={pokemons}
             keyExtractor={pokemon => pokemon.id.toString()}
             renderItem={({item: pokemon}) =>
-                <Card data={pokemon} />
+
+                    <Card data={pokemon} onPress={() => {
+                        handleNavigation(pokemon.id)
+                    }} />
+
             }
        />
     </S.Container>
