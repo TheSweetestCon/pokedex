@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Welcome } from "../global/styles/pages/welcome";
-import { Home } from "../global/styles/pages/home";
-import { About } from "../global/styles/pages/about";
+import { Welcome } from "../pages/welcome";
+import { Home } from "../pages/home";
+import { About } from "../pages/about";
 
 const Stack = createNativeStackNavigator()
 export function AppRoutes(){
