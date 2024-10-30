@@ -4,10 +4,14 @@ import pokeballAnimation from './pokeball.json'
 import LottieView from 'lottie-react-native'
 import { Button } from '../../components/Button';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../routes/app.routes'
+
 
 
 export function Welcome(){
-    const {navigate} = useNavigation()
+    const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    
     function handleNavigation(){
         navigate('Home')
     }

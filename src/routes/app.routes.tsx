@@ -4,7 +4,13 @@ import { Welcome } from "../pages/welcome";
 import { Home } from "../pages/home";
 import { About } from "../pages/about";
 
-const Stack = createNativeStackNavigator()
+export type RootStackParamList = {
+    Welcome: undefined; // ou { /* parâmetros aqui se houver */ }
+    Home: undefined; 
+    About: { pokemonID: number };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 export function AppRoutes(){
     return <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name='Welcome' component={Welcome} />

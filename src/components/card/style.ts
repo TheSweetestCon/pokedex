@@ -60,7 +60,7 @@ export const PokemonType = styled.View<PokemonType>`
     ${({theme, type}) => css`
         background-color: ${theme.colors.boxType[type]};
         padding: 5px;
-        width: 65px;
+        width: 90px;
         height: 25px;
         border-radius: 3px;
         margin-left: 5px;

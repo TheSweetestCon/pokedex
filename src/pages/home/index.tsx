@@ -1,81 +1,90 @@
 import React, { useEffect, useState } from 'react';
-import {FlatList, Text} from 'react-native'
+import {Button, FlatList, Text} from 'react-native'
 import * as S from './styles'
 import api from '../../service/api';
 import { Card, Pokemon, PokemonType } from '../../components/card';
 import pokeballHeader from '../../assets/img/pokeball.png'
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../routes/app.routes'
 
 
 type Request = {
     id: number,
     types: PokemonType[]
-}
+};
 
-export function Home(){
+export function Home() {
+    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [offset, setOffset] = useState(0);
 
-    const [pokemons, setPokemons] = useState<Pokemon[]>([])
+    const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-    const {navigate} = useNavigation()
-    function handleNavigation(pokemonID: number){
+    function handleNavigation(pokemonID: number) {
         navigate('About', {
             pokemonID,
-        })
+        });
+    }
+
+    async function getAllPokemon(offset: number) {
+        const response = await api.get(`/pokemon?offset=${offset}&limit=20`);
+        const { results } = response.data;
+
+        const payloadPokemons = await Promise.all(
+            results.map(async (pokemon: Pokemon) => {
+                const { id, types } = await getMoreInfo(pokemon.url);
+
+                return {
+                    name: pokemon.name,
+                    id,
+                    types
+                };
+            })
+        );
+
+        setPokemons(payloadPokemons);
+    }
+
+    async function getMoreInfo(url: string): Promise<Request> {
+        const response = await api.get(url);
+        const { id, types } = response.data;
+
+        return {
+            id, types
+        };
     }
 
     useEffect(() => {
-        async function getAllPokemon() {
-            const response = await api.get('pokemon')
-            const {results} = response.data
+        getAllPokemon(offset);
+    }, [offset]);
 
-            const payloadPokemon = await Promise.all(
-                results.map(async (pokemon: Pokemon) => {
-                    const {id, types} = await getMoreInfo(pokemon.url)
-                    console.log(pokemon.name, id, types)
-                    return {
-                        name: pokemon.name,
-                        id,
-                        types
-                    }
-                })
-            )
-            //console.log(payloadPokemon)
-            setPokemons(payloadPokemon)
-        }
-        getAllPokemon()
-    },[])
-
-    async function getMoreInfo(url: string): Promise<Request> {
-        const response = await api.get(url)
-        
-        const {id, types} = response.data
-
-        return {id, types}
+    function handleLoadMore() {
+        setOffset(offset + 20);
     }
 
-    return <S.Container>
-       <FlatList
-            ListHeaderComponent={
-                <>
-                    <S.Header source={pokeballHeader} />
-                    <S.Title>Pokédex</S.Title>
-                
-                </>
-
-            }
-            contentContainerStyle = {{
-                paddingHorizontal: 20
-            }}
-            data={pokemons}
-            keyExtractor={pokemon => pokemon.id.toString()}
-            renderItem={({item: pokemon}) =>
-
+    return (
+        <S.Container>
+            <FlatList
+                ListHeaderComponent={
+                    <>
+                        <S.Header source={pokeballHeader} />
+                        <S.Title>Pokédex</S.Title>
+                    </>
+                }
+                contentContainerStyle={{
+                    paddingHorizontal: 20
+                }}
+                data={pokemons}
+                keyExtractor={pokemon => pokemon.id.toString()}
+                renderItem={({ item: pokemon }) => (
                     <Card data={pokemon} onPress={() => {
                         handleNavigation(pokemon.id)
                     }} />
-
-            }
-       />
-    </S.Container>
-
+                )}
+            />
+            
+            <Button title="Carregar mais" onPress={handleLoadMore} />
+        </S.Container>
+        
+    );
 }
